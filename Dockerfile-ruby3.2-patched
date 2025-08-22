@@ -1,0 +1,64 @@
+# Builder
+# Use an official Go image that has the security fix (>=1.24.6).
+# We use -alpine to keep the builder stage small and fast.
+#
+# NOTE:
+# Remove this as soon as AWS deals with aws-lambda-rie vulnerabilities: CVE-2025-47907 and CVE-2025-4674
+# =================================================================
+
+FROM golang:1.24.6-alpine AS gobuilder
+
+# Install git, which is required to clone the source code repository.
+RUN apk add --no-cache git
+
+# Set a working directory inside the builder stage.
+WORKDIR /src
+
+# Clone the official source code for the AWS Lambda RIE.
+# It's good practice to clone a specific tag for reproducibility, but for this
+# purpose, cloning the main branch is sufficient.
+RUN git clone https://github.com/aws/aws-lambda-runtime-interface-emulator.git .
+
+# Compile the RIE.
+# - CGO_ENABLED=0 creates a static binary with no C library dependencies.
+# - -ldflags="-s -w" strips debug symbols, making the binary smaller.
+# The output file will be named 'aws-lambda-rie'.
+RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o aws-lambda-rie ./cmd/aws-lambda-rie
+
+# ===========================================
+
+
+FROM public.ecr.aws/lambda/ruby:3.2
+
+# --- FIX: Vulnerabilities ---
+# Copy the newly compiled, non-vulnerable 'aws-lambda-rie' binary
+# from our 'builder' stage. This overwrites the vulnerable version
+# located at /usr/local/bin/aws-lambda-rie in the base image.
+COPY --from=gobuilder /src/aws-lambda-rie /usr/local/bin/aws-lambda-rie
+
+# CVE-2025-8194
+RUN yum update -y python3 python
+
+# CVE-2025-24294
+RUN yum update -y ruby
+
+# CVE-2025-43857
+# /var/lang/lib/ruby/gems/3.2.0/specifications/net-imap-0.3.8.gemspec
+# patching CVE-2025-43857
+RUN gem install 'net-imap:0.3.9' --default && \
+    rm -f /var/lang/lib/ruby/gems/3.2.0/specifications/net-imap-0.3.8.gemspec && \
+    gem uninstall 'net-imap:0.3.8'
+
+# CVE-2025-6965
+RUN yum update -y sqlite
+
+# GHSA-vrw8-fxc6-2r93
+# /usr/local/bin/aws-lambda-rie
+# golang / github.com/go-chi/chi / 1.5.5
+RUN echo "no fix available?"
+
+# CVE-2025-24294
+# /var/lang/lib/ruby/gems/3.2.0/specifications/default/resolv-0.2.2.gemspec
+RUN gem install 'resolv:0.2.3' --default && \
+    rm -f /var/lang/lib/ruby/gems/3.2.0/specifications/default/resolv-0.2.2.gemspec && \
+    gem uninstall 'resolv:0.2.2'
