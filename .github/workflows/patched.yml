@@ -3,7 +3,7 @@ name: "aws-lambda-ruby-patched:3.2"
 on:
   pull_request:
     paths:
-      - "./Dockerfile-ruby3.2-patched"
+      - "Dockerfile-ruby3.2-patched"
 
 jobs:
   build-and-push:
