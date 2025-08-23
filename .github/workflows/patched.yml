@@ -31,7 +31,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./bigquery/Dockerfile4parquet
+          file: ./Dockerfile-ruby3.2-patched
           push: true
           platforms: linux/amd64,linux/arm64
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/aws-lambda-ruby-patched:3.2
