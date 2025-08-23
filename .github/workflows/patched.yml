@@ -34,13 +34,13 @@ jobs:
           file: ./bigquery/Dockerfile4parquet
           push: true
           platforms: linux/amd64,linux/arm64
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ inputs.job-name }}
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/aws-lambda-ruby-patched:3.2
       # - name: Scan
       #   id: scan
       #   uses: anchore/scan-action@v6
       #   continue-on-error: true
       #   with:
-      #     image: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ inputs.job-name }}
+      #     image: ${{ secrets.DOCKER_HUB_USERNAME }}/aws-lambda-ruby-patched:3.2
       #     fail-build: true
       #     output-format: sarif
       #     severity-cutoff: low
@@ -49,4 +49,4 @@ jobs:
       #   uses: forward3d/comment-failure-details@v1.0.0
       #   with:
       #     report: ${{ steps.scan.outputs.sarif }}
-      #     image-name: ${{ inputs.job-name }}
+      #     image-name: aws-lambda-ruby-patched:3.2
