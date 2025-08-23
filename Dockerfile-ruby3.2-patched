@@ -1,4 +1,4 @@
-# Builder
+# GoBuilder
 # Use an official Go image that has the security fix (>=1.24.6).
 # We use -alpine to keep the builder stage small and fast.
 #
