@@ -1,4 +1,4 @@
-FROM public.ecr.aws/lambda/ruby:3.2
+FROM f3ddevelopers/aws-lambda-ruby-patched:3.2
 
 RUN yum swap -y openssl-snapsafe-libs openssl-libs
 
