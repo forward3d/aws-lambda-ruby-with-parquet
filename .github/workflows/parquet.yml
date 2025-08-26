@@ -3,7 +3,7 @@ name: "aws-lambda-ruby-parquet:3.2"
 on:
   pull_request:
     paths:
-      - "Dockerfile-ruby3.2-parquet"
+      - "parquet/ruby-3.2/Dockerfile"
 
 jobs:
   build-and-push:
@@ -31,7 +31,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./Dockerfile-ruby3.2-parquet
+          file: ./parquet/ruby-3.2/Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/aws-lambda-ruby-parquet:3.2
