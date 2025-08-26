@@ -30,7 +30,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ./patched/ruby-3.2/
           file: ./patched/ruby-3.2/Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
