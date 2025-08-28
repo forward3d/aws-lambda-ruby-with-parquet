@@ -9,8 +9,8 @@ RUN yum update -y && \
 COPY Gemfile .
 COPY Gemfile.lock .
 
-# RUN bundle config set deployment true && \
-#     bundle config set without 'test development' && \
+RUN bundle config set deployment true && \
+    bundle config set without 'test development'
 #     bundle config build.ffi -- --with-cflags="-Wno-implicit-function-declaration" && \
 #     bundle config set retry 5 && \
 #     bundle config set jobs $(getconf _NPROCESSORS_ONLN) && \
