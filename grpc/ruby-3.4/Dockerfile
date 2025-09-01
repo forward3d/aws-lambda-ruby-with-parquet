@@ -5,8 +5,8 @@ RUN dnf update -y && \
         ruby-devel \
         make gcc gcc-c++ \
         openssl-devel zlib-devel libffi-devel \
-        git patch tar \
-    && dnf clean all
+        git patch tar && \
+    dnf clean all
 
 COPY Gemfile .
 COPY Gemfile.lock .
